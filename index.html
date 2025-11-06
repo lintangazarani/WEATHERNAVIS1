@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WEATHER TODAY</title>
+
+  <!-- Font Keren -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #ffb6c1, #ff69b4, #ff1493);
+      --text-light: #ffffff;
+      --accent: #ff1493;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --border: rgba(255, 20, 147, 0.3);
+      --shadow: rgba(255, 20, 147, 0.2);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: slideIn 1s ease-out;
+    }
+
+    header h1 {
+      font-size: 3.5rem;
+      color: #c71585;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      background: linear-gradient(45deg, #ff1493, #c71585);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    header p {
+      color: #ffffff;
+      font-weight: 300;
+      font-size: 1.2rem;
+    }
+
+    #news-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 40px 0;
+    }
+
+    .news-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 25px;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 32px var(--shadow);
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      backdrop-filter: blur(10px);
+    }
+
+    .news-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(255, 20, 147, 0.4);
+      border-color: var(--accent);
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: linear-gradient(45deg, #ffb6c1, #ff69b4);
+    }
+
+    .news-content {
+      padding: 25px;
+      text-align: center;
+    }
+
+    .news-title {
+      font-size: 1.6rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .news-description {
+      color: #333;
+      font-size: 1rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .news-meta {
+      font-size: 0.9rem;
+      color: #666;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .read-more {
+      display: inline-block;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(45deg, var(--accent), #c71585);
+      padding: 10px 20px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+    }
+
+    .read-more:hover {
+      background: linear-gradient(45deg, #c71585, var(--accent));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 20, 147, 0.5);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 20px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Musik Player */
+    #music-player {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--accent);
+      border-radius: 50px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: var(--accent);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    #music-player button {
+      background: var(--accent);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(255, 20, 147, 0.3);
+    }
+
+    #music-player button:hover {
+      background: #c71585;
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(255, 20, 147, 0.5);
+    }
+
+    #volumeSlider {
+      width: 100px;
+      accent-color: var(--accent);
+    }
+
+    .loading, .error {
+      text-align: center;
+      font-size: 1.5rem;
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2.5rem;
+      }
+      .news-card {
+        width: 100%;
+        max-width: 300px;
+      }
+      #news-container {
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>WEATHER TODAY</h1>
+    <p>Informasi Cuaca Indonesia</p>
+  </header>
+
+  <div id="news-container"></div>
+
+  <footer>© 2025 NAVIS WEATHER — Made with ❤️ for Everyone</footer>
+
+  <!-- Pemutar Musik -->
+  <div id="music-player">
+    <audio id="bg-audio" src="music/KATSEYE (캣츠아이) Gabriela (Audio).mp3" loop></audio>
+    <button id="playBtn">▶</button>
+    <button id="volDown">🔉</button>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+    <button id="volUp">🔊</button>
+    <span id="trackTitle">LAKEY INSPIRED - Blue Boi.mp3</span>
+  </div>
+
+  <!-- SCRIPT JS -->
+  <script>
+    const apiKey = '128a898991c99190dd0d4455d96a79d8'; // ✅ API KEY BARU
+    const cities = ['Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Bali', 'Yogyakarta'];
+
+    async function fetchWeather() {
+      const newsContainer = document.getElementById('news-container');
+      newsContainer.innerHTML = '<div class="loading">Memuat data cuaca...</div>';
+
+      try {
+        const results = await Promise.all(
+          cities.map(async city => {
+            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=id`);
+            if (!res.ok) {
+              throw new Error(`Gagal mengambil data untuk ${city}: ${res.status} ${res.statusText}`);
+            }
+            return res.json();
+          })
+        );
+
+        newsContainer.innerHTML = '';
+
+        results.forEach(data => {
+          if (data.cod !== 200) return;
+
+          const card = document.createElement('div');
+          card.className = 'news-card';
+
+          const icon = data.weather[0].icon;
+          const imageUrl = `https://openweathermap.org/img/wn/${icon}@4x.png`;
+          const date = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+          });
+
+          card.innerHTML = `
+            <div class="thumb">
+              <img src="${imageUrl}" alt="${data.weather[0].description}">
+            </div>
+            <div class="news-content">
+              <h3 class="news-title">${data.name}</h3>
+              <p class="news-description">
+                ${data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1)}
+              </p>
+              <div class="news-meta">
+                <div class="meta-left">🌡️ ${data.main.temp}°C — Kelembapan ${data.main.humidity}%</div>
+                <div class="meta-right">${date}</div>
+              </div>
+              <a href="https://openweathermap.org/city/${data.id}" target="_blank" class="read-more">Lihat detail</a>
+            </div>
+          `;
+
+          newsContainer.appendChild(card);
+        });
+      } catch (err) {
+        console.error("Detail error:", err);
+        newsContainer.innerHTML = `<div class="error">Gagal memuat data cuaca.<br><small>${err.message}</small></div>`;
+      }
+    }
+
+    window.onload = fetchWeather;
+
+    // Musik Player
+    (function(){
+      const audio = document.getElementById('bg-audio');
+      const playBtn = document.getElementById('playBtn');
+      const volUp = document.getElementById('volUp');
+      const volDown = document.getElementById('volDown');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const trackTitle = document.getElementById('trackTitle');
+
+      try {
+        const src = audio.getAttribute('src') || '';
+        if (src) {
+          const parts = src.split('/');
+          trackTitle.textContent = parts[parts.length-1] || trackTitle.textContent;
+        }
+      } catch(e){}
+
+      const saved = parseFloat(localStorage.getItem('site-volume'));
+      if (!isNaN(saved)) {
+        audio.volume = saved;
+        volumeSlider.value = saved;
+      } else {
+        audio.volume = parseFloat(volumeSlider.value);
+      }
+
+      function updatePlayBtn(){
+        playBtn.textContent = audio.paused ? '▶' : '⏸';
+        playBtn.setAttribute('aria-pressed', String(!audio.paused));
+      }
+
+      window.addEventListener('load', async () => {
+        try { await audio.play(); } catch (err) { console.warn('Autoplay blocked:', err); }
+        updatePlayBtn();
+      });
+
+      playBtn.addEventListener('click', async () => {
+        try {
+          if (audio.paused) await audio.play();
+          else audio.pause();
+          updatePlayBtn();
+        } catch (err) { console.warn('Play/pause failed:', err); }
+      });
+
+      volumeSlider.addEventListener('input', (e) => {
+        const v = parseFloat(e.target.value);
+        audio.volume = v;
+        localStorage.setItem('site-volume', v);
+      });
+
+      function clamp(v){ return Math.max(0, Math.min(1, v)); }
+      volUp.addEventListener('click', () => {
+        const nv = clamp(audio.volume + 0.1);
+        audio.volume = nv; volumeSlider.value = nv;
+        localStorage.setItem('site-volume', nv);
+      });
+      volDown.addEventListener('click', () => {
+        const nv = clamp(audio.volume - 0.1);
+        audio.volume = nv; volumeSlider.value = nv;
+        localStorage.setItem('site-volume', nv);
+      });
+
+      audio.addEventListener('play', updatePlayBtn);
+      audio.addEventListener('pause', updatePlayBtn);
+      audio.addEventListener('ended', updatePlayBtn);
+    })();
+  </script>
+</body>
+</html>
